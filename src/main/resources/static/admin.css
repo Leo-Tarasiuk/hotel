@@ -1,0 +1,116 @@
+.person__title {
+    margin-top: 150px;
+    color: #475eab;
+    width: 100%;
+    font-size: larger;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.person__title h2 {
+    color: #475eab;
+    margin: 0;
+}
+
+.content {
+    background: white;
+    color: #475eab;
+    margin: 20px 150px;
+    border: 2px solid #475eab;
+    padding: 20px;
+}
+
+.account_inf {
+    width: 100%;
+}
+
+.table {
+    border-collapse: collapse;
+    border: 3px solid white;
+    margin: 0 10px;
+}
+
+.table th, td {
+    padding: 10px;
+    border: 2px solid #475eab;
+    margin: 10px;
+    text-align: center;
+}
+
+.block {
+    color: #ff463d;
+    background: white;
+    padding: 3px;
+    border: 1px solid white;
+}
+
+.block:hover {
+    cursor: pointer;
+    color: red;
+    text-decoration-line: underline;
+}
+
+.cancel__booking {
+    color: #ff463d;
+    background: white;
+    padding: 3px;
+    border: 1px solid white;
+}
+
+.cancel__booking:hover {
+    cursor: pointer;
+    text-decoration-line: underline;
+}
+
+.accept__booking {
+    color: #475eab;
+    background: white;
+    padding: 3px;
+    border: 1px solid white;
+}
+
+.accept__booking:hover {
+    cursor: pointer;
+    text-decoration-line: underline;
+}
+
+.pagination_section {
+    display: inline-flex;
+    margin: 0 500px 80px 675px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.pagination_section form {
+    margin: 0 5px;
+}
+
+.pagination_section button {
+    color: #475eab;
+    /*background: white;*/
+    border: #475eab;
+    padding: 3px;
+    font-size: large;
+}
+
+.pagination_section button:hover {
+    cursor: pointer;
+    color: #2126ab;
+}
+
+.switch {
+    margin: 10px 30px 0 30px;
+}
+
+.switch a {
+    text-decoration: none;
+    color: white;
+    border: 1px solid #475eab;
+    background: #475eab;
+    border-radius: 5px;
+    padding: 7px;
+}
+
+.switch a:hover {
+    color: #333333;
+}

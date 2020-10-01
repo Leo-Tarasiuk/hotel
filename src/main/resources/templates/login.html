@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="registration.css">
+    <link rel="stylesheet" href="header_footer.css">
+    <title>Log in</title>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+<!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/dining}">Dining</a></li>
+                <li><a class="href" th:href="@{/fitness}">Fitness</a></li>
+                <li><a class="href" th:href="@{/spa}">Spa</a></li>
+                <li><a class="href" th:href="@{/map}">Map</a></li>
+                <li th:each="role : ${account.getRoles()}" sec:authorize="isAuthenticated()">
+                    <a class="href" th:if="${role} == CLIENT" th:href="@{/account}">Booking</a>
+                    <a class="href" th:if="${role} == ADMIN" th:href="@{/booking-all}">Booking</a>
+                </li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a></li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()"><a th:href="@{/account}" class="href">Account</a></li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="form_container">
+    <div class="title">
+        Log in
+    </div>
+    <div class="form_registration">
+        <form name="f" th:action="@{/signin}" method="post">
+            <!-- Thymeleaf + Spring Security error display -->
+            <div th:if="${param.error}">
+                Invalid username and password.
+            </div>
+
+            <div th:if="${param.logout}">
+                You have been logged out.
+            </div>
+
+            <!-- Login Controls -->
+            <div class="form_control">
+                <label for="Username" class="inf">Email      </label>
+                <input type="text" id="Username" name="Username"
+                       placeholder="user@example.com">
+            </div>
+
+            <div class="form_control">
+                <label for="Password" class="inf">Password</label>
+                <input type="password" id="Password" name="Password"
+                       placeholder="password">
+            </div>
+
+            <div class="event">
+                <!-- Login Button -->
+                <div class="button-second">
+                    <button type="submit" class="submit-second" sec:authorize="!isAuthenticated()">Log in</button>
+                </div>
+
+                <div class="check-box">
+                    <input type="checkbox" id="checkRememberMe" name="checkRememberMe">
+                    <label for="checkRememberMe">Remember me?</label>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+</body>
+</html>

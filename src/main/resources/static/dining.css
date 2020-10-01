@@ -1,0 +1,123 @@
+.dining__title {
+    font-size: larger;
+    padding-top: 30px;
+    padding-bottom: 15px;
+    margin: 120px 0 0 0;
+    width: 100%;
+    text-align: center;
+    background: white;
+}
+
+.dining__title h2 {
+    margin: 0;
+    color: #475eab;
+}
+
+.dining {
+    background: white;
+    color: #475eab;
+    margin-bottom: 50px;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.photo__dining {
+    width: 80%;
+    padding: 10px 0 10px 0;
+    margin-left: 150px;
+    margin-bottom: 20px;
+}
+
+.photo__dining img {
+    width: 100%;
+}
+
+.dining__item {
+    padding-left: 150px;
+    padding-right: 150px;
+    margin-bottom: 10px;
+    /*width: 100%;*/
+}
+
+.dining__items {
+    display: inline-flex;
+}
+
+.dining__items h3 {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+}
+
+.dining__convenience {
+    padding: 0 50px;
+    margin: 0 70px 10px 0;
+    width: 300px;
+}
+
+.title__con h3 {
+    width: 60%;
+    margin: 0;
+    padding: 10px 0 10px 0;
+    text-align: center;
+    font-size: larger;
+}
+
+.dining__convenience p {
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.dining__item h5 {
+    padding-top: 10px;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+    font-size: smaller;
+}
+
+.dining__item h3 {
+    width: 100%;
+    margin: 0;
+    padding: 0 0 10px 0;
+    text-align: left;
+    font-size: larger;
+}
+
+.dining__list__first {
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.dining__list__first li {
+    margin: 5px 0;
+    width: 100%;
+    text-decoration: none;
+    list-style: none;
+}
+
+.dining__list__second {
+    width: 100%;
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+.dining__list__second li {
+    margin-right: 10px;
+    width: 200px;
+    text-decoration: none;
+    list-style: none;
+}
+
+.enter {
+    height: 30px;
+    background: #ebebeb;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+

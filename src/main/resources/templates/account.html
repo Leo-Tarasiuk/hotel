@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="account.css">
+    <link rel="stylesheet" href="header_footer.css">
+    <title>Account</title>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+                <!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/dining}">Dining</a></li>
+                <li><a class="href" th:href="@{/fitness}">Fitness</a></li>
+                <li><a class="href" th:href="@{/spa}">Spa</a></li>
+                <li><a class="href" th:href="@{/map}">Map</a></li>
+                <li th:each="role : ${account.getRoles()}" sec:authorize="isAuthenticated()">
+                    <a class="href" th:if="${role} == CLIENT" th:href="@{/account}">Booking</a>
+                    <a class="href" th:if="${role} == ADMIN" th:href="@{/booking-all}">Booking</a>
+                </li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a>
+                </li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign
+                    up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()"><a th:href="@{/account}" class="href">Account</a>
+                </li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="person__title">
+    <h2>Personal information</h2>
+</div>
+
+<div class="content">
+    <div class="account_inf" th:if="${account.getBookings() != null}">
+        <div>
+            <p class="title">Booking</p>
+        </div>
+        <div>
+            <table class="table">
+                <tr>
+                    <th>Booking_id</th>
+                    <th>Room</th>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+                <tr th:each="booking : ${account.getBookings()}">
+                    <td th:text="${booking.getId()}">123</td>
+                    <td><a th:href="@{/room(id = ${booking.getRoom().getId()})}"
+                           th:text="${booking.getRoom().getId()}">23</a></td>
+                    <td th:text="${booking.getFirstDay().toString()} + ' by ' + ${booking.getLastDay().toString()}">
+                        2020-05-06 by
+                        2020-05-09
+                    </td>
+                    <td th:text="${booking.getCost()} + '$'">300$</td>
+                    <td th:if="${booking.getActive()} == 0">
+                        In processing
+                        <form method="post" th:action="@{/booking-delete}">
+                            <input type="hidden" name="booking_id" th:value="${booking.getId()}">
+                            <button type="submit" class="cancel__booking">Cancel</button>
+                        </form>
+                    </td>
+                    <td th:if="${booking.getActive()} == 1">
+                        <form method="post" th:action="@{/booking-delete}">
+                            <input type="hidden" name="booking_id" th:value="${booking.getId()}">
+                            <a href="#" class="open_modal_two" onclick="dialogWindowTwo()">Cancel</a>
+                            <button type="submit" id="cancel_booking" class="cancel__booking" style="display: none">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="account_inf">
+        <div class="passport_inf">
+            <div class="passport">
+                <p class="title">Passport</p>
+            </div>
+            <div class="passport" th:if="${account.getClientPassport() != null}">
+                <div class="passport_item">
+                    <div class="label">
+                        <label>Name </label>
+                    </div>
+                    <span th:text="${account.getClientPassport().getName()}">Name</span>
+                </div>
+                <div class="passport_item">
+                    <div class="label">
+                        <label>Last name </label>
+                    </div>
+                    <span th:text="${account.getClientPassport().getLastName()}">Last name</span>
+                </div>
+                <div class="passport_item">
+                    <div class="label">
+                        <label>Patronymic </label>
+                    </div>
+                    <span th:text="${account.getClientPassport().getPatronymic()}">Patronymic</span>
+                </div>
+                <div class="passport_item">
+                    <div class="label">
+                        <label>Country </label>
+                    </div>
+                    <span th:text="${account.getClientPassport().getCountry()}">Country</span>
+                </div>
+                <div class="passport_item">
+                    <div class="label">
+                        <label>Date of birth </label>
+                    </div>
+                    <span th:text="${account.getClientPassport().getDateOfBirth()}">Date of birth</span>
+                </div>
+                <div class="passport_item">
+                    <div class="label">
+                        <label>Sex </label>
+                    </div>
+                    <span th:text="${account.getClientPassport().getSex()}">Sex</span>
+                </div>
+                <div class="passport_item">
+                    <div class="label">
+                        <label>IdentificationNo </label>
+                    </div>
+                    <span th:text="${account.getClientPassport().getIdentificationNo()}">IdentificationNo</span>
+                </div>
+                <div class="passport_item">
+                    <div class="label">
+                        <label>PassportNo </label>
+                    </div>
+                    <span th:text="${account.getClientPassport().getPassportNo()}">PassportNo</span>
+                </div>
+            </div>
+            <div class="passport" th:if="${account.getClientPassport() == null}">
+                <form th:action="@{/passport-save}" method="post">
+                    <div class="passport_item">
+                        <div class="label">
+                            <label for="name">Name </label>
+                        </div>
+                        <input id="name" name="name" placeholder="Name" type="text">
+                    </div>
+                    <div class="passport_item">
+                        <div class="label">
+                            <label for="lastName">Last name </label>
+                        </div>
+                        <input id="lastName" name="lastName" placeholder="LastName" type="text">
+                    </div>
+                    <div class="passport_item">
+                        <div class="label">
+                            <label for="patronymic">Patronymic </label>
+                        </div>
+                        <input id="patronymic" name="patronymic" placeholder="Patronymic" type="text">
+                    </div>
+                    <div class="passport_item">
+                        <div class="label">
+                            <label for="country">Country </label>
+                        </div>
+                        <input id="country" name="country" placeholder="Country" type="text">
+                    </div>
+                    <div class="passport_item">
+                        <div class="label">
+                            <label for="birthday">Date of birth </label>
+                        </div>
+                        <input id="birthday" name="birthday" placeholder="01.01.1999" type="date">
+                    </div>
+                    <div class="passport_item">
+                        <div class="label">
+                            <label for="sex">Sex </label>
+                        </div>
+                        <select id="sex" name="sex" size="1">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="passport_item">
+                        <div class="label">
+                            <label for="ident">Identification №</label>
+                        </div>
+                        <input id="ident" name="identification" placeholder="0000000X000XX0" type="text">
+                    </div>
+                    <div class="passport_item">
+                        <div class="label">
+                            <label for="passport">Passport № </label>
+                        </div>
+                        <input id="passport" name="passport" type="text" placeholder="XX0000000">
+                    </div>
+                    <input id="id" name="id" type="hidden" th:value="${account.getId()}">
+                    <div class="button">
+                        <button type="submit" class="submit">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="account_inf">
+        <div class="password">
+            <div class="password_title">
+                <p class="title">Change password</p>
+            </div>
+            <div class="password_inf">
+                <form th:action="@{/change}" method="post">
+                    <div class="password_item">
+                        <div class="label">
+                            <label for="password">Password</label>
+                        </div>
+                        <input id="password" type="password" placeholder="password" name="password">
+                    </div>
+                    <div class="password_item">
+                        <div class="label">
+                            <label for="new_password">New password</label>
+                        </div>
+                        <input id="new_password" type="password" placeholder="new password" name="newPassword">
+                    </div>
+                    <div class="password_item">
+                        <div class="label">
+                            <label for="repeat_password">Repeat password</label>
+                        </div>
+                        <input id="repeat_password" type="password" placeholder="new password"
+                               name="repeatPassword">
+                    </div>
+                    <input type="hidden" name="account_id" th:value="${account.getId()}">
+                    <div class="button">
+                        <button type="submit" id="change_pass" class="submit" style="display: none">Change</button>
+                        <a href="#" class="open_modal" onclick="dialogWindow()">Change</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dialog_window" class="dialog_window">
+    <div class="form_window">
+        <div class="form_window_item">
+            <h3 class="password_change">Are you sure?</h3>
+        </div>
+        <div class="form_window_item">
+            <button sec:authorize="isAuthenticated()" onclick="accept()">Change</button>
+            <button onclick="dialogWindow()" class="cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="dialog_window_two" class="dialog_window">
+    <div class="form_window">
+        <div class="form_window_item_two">
+            <h3 class="modal_title">Are you sure you want to cancel your booking?</h3>
+        </div>
+        <div class="form_window_item_two">
+            <button sec:authorize="isAuthenticated()" onclick="cancel()">Yes</button>
+            <button onclick="dialogWindowTwo()" class="cancel">No</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+
+<script>
+    function cancel() {
+        document.getElementById("cancel_booking").click();
+    }
+
+    let dialog_two = false;
+    function dialogWindowTwo(){
+        if (dialog_two) {
+            document.getElementById("dialog_window_two").style.display = 'none';
+            dialog_two = false;
+        } else {
+            document.getElementById("dialog_window_two").style.display = 'block';
+            dialog_two = true;
+        }
+    }
+
+    function accept() {
+        document.getElementById("change_pass").click();
+    }
+
+    let dialog = false;
+    function dialogWindow(){
+        if (dialog) {
+            document.getElementById("dialog_window").style.display = 'none';
+            dialog = false;
+        } else {
+            document.getElementById("dialog_window").style.display = 'block';
+            dialog = true;
+        }
+    }
+</script>
+</body>
+</html>

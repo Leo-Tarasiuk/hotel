@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="header_footer.css">
+    <link rel="stylesheet" href="admin.css">
+    <title>Clients</title>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+<!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/dining}">Dining</a></li>
+                <li><a class="href" th:href="@{/fitness}">Fitness</a></li>
+                <li><a class="href" th:href="@{/spa}">Spa</a></li>
+                <li><a class="href" th:href="@{/map}">Map</a></li>
+                <li th:each="role : ${account.getRoles()}" sec:authorize="isAuthenticated()">
+                    <a class="href" th:if="${role} == CLIENT" th:href="@{/account}">Booking</a>
+                    <a class="href" th:if="${role} == ADMIN" th:href="@{/booking-all}">Booking</a>
+                </li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a>
+                </li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign
+                    up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()"><a th:href="@{/account}" class="href">Account</a>
+                </li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="person__title">
+    <h2>Clients information</h2>
+</div>
+
+<div class="content">
+    <div class="account_inf" th:if="${clients} != null">
+        <table class="table">
+            <tr>
+                <th>Client_id</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Last_Name</th>
+                <th>Patronymic</th>
+                <th>Sex</th>
+                <th>Date_of_Birth</th>
+                <th>Country</th>
+                <th>Passport_no</th>
+                <th>Identification_no</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+            <tr th:each="client : ${clients}" th:if="${client} != null">
+                <td th:text="${client.getId()}">123</td>
+                <td th:text="${client.getUsername()}">some@mail.ru</td>
+                <td th:text="${client.getClientPassport().getName()}">Name</td>
+                <td th:text="${client.getClientPassport().getLastName()}">Last_Name</td>
+                <td th:text="${client.getClientPassport().getPatronymic()}">Patronymic</td>
+                <td th:text="${client.getClientPassport().getSex()}">Sex</td>
+                <td th:text="${client.getClientPassport().getDateOfBirth()}">Date_of_Birth</td>
+                <td th:text="${client.getClientPassport().getCountry()}">Country</td>
+                <td th:text="${client.getClientPassport().getPassportNo()}">Passport_no</td>
+                <td th:text="${client.getClientPassport().getIdentificationNo()}">Identification_no</td>
+                <td th:text="${client.getActive()}">1</td>
+                <td>
+                    <form method="post" th:action="@{/block}">
+                        <input type="hidden" name="id" th:value="${client.getId()}">
+                        <button type="submit" class="block">Block</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="pagination_section">
+    <form method="get" th:action="@{/clients}">
+        <input type="hidden" name="page" th:value="${page} - 1">
+        <button type="submit" th:if="${page} != 0">&#10094 previous</button>
+        <button type="submit" th:if="${page} == 0" disabled>&#10094 previous</button>
+    </form>
+    <form method="get" th:action="@{/clients}">
+        <input type="hidden" name="page" th:value="${page} + 1">
+        <button type="submit" th:if="${page} != ${maxPage}">next &#10095</button>
+        <button type="submit" th:if="${page} == ${maxPage}" disabled>next &#10095</button>
+    </form>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+</body>
+</html>

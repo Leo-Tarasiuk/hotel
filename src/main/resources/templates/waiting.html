@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="header_footer.css">
+    <title>Accounts</title>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+<!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/dining}">Dining</a></li>
+                <li><a class="href" th:href="@{/fitness}">Fitness</a></li>
+                <li><a class="href" th:href="@{/spa}">Spa</a></li>
+                <li><a class="href" th:href="@{/map}">Map</a></li>
+                <li sec:authorize="isAuthenticated()"><a class="href" th:href="@{/booking-all}">Booking</a></li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a>
+                </li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign
+                    up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()"><a th:href="@{/account}" class="href">Account</a>
+                </li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div id="dialog_window" class="dialog_window">
+    <div class="form_window">
+        <div class="form_window_item">
+            <h3>Are you sure about your booking?</h3>
+        </div>
+        <div class="form_window_item">
+            <button sec:authorize="isAuthenticated()" onclick="sendBooking()">Booking</button>
+            <button onclick="dialogWindow()" class="cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="person__title">
+    <h2>Booking information</h2>
+    <div class="switch">
+        <a th:href="@{/booking-all(page = 0)}">All bookings</a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="account_inf" th:if="${waiting != null}">
+        <table class="table">
+            <tr>
+                <th>Booking_id</th>
+                <th>Room</th>
+                <th>First day</th>
+                <th>Last day</th>
+                <th>Cost</th>
+                <th>Active</th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr th:each="booking : ${waiting}">
+                <td th:text="${booking.getId()}">123</td>
+                <td><a th:href="@{/room(id = ${booking.getRoom().getId()})}"
+                       th:text="${booking.getRoom().getId()}">23</a></td>
+                <td th:text="${booking.getFirstDay().toString()}">2020-05-06</td>
+                <td th:text="${booking.getLastDay().toString()}">2020-05-09</td>
+                <td th:text="${booking.getCost()} + '$'">300$</td>
+                <td th:text="${booking.getActive()}"></td>
+                <td th:if="${booking.getActive() == 0}">
+                    <form method="post" th:action="@{/booking-accept}">
+                        <input type="hidden" name="booking_id" th:value="${booking.getId()}">
+                        <button type="submit" class="accept__booking">Accept</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" th:action="@{/booking-delete}">
+                        <input type="hidden" name="booking_id" th:value="${booking.getId()}">
+                        <button type="submit" class="cancel__booking">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="pagination_section">
+    <form method="get" th:action="@{/booking-all-waiting}">
+        <input type="hidden" name="page" th:value="${page} - 1">
+        <button type="submit" th:if="${page} != 0">&#10094 previous</button>
+        <button type="submit" th:if="${page} == 0" disabled>&#10094 previous</button>
+    </form>
+    <form method="get" th:action="@{/booking-all-waiting}">
+        <input type="hidden" name="page" th:value="${page} + 1">
+        <button type="submit" th:if="${page} != ${maxPage}">next &#10095</button>
+        <button type="submit" th:if="${page} == ${maxPage}" disabled>next &#10095</button>
+    </form>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+<script>
+    function sendBooking() {
+        document.getElementById("booking").click();
+    }
+
+    let dialog = false;
+    function dialogWindow(){
+        if (dialog) {
+            document.getElementById("dialog_window").style.display = 'none';
+            dialog = false;
+        } else {
+            document.getElementById("dialog_window").style.display = 'block';
+            dialog = true;
+        }
+    }
+</script>
+</body>
+</html>

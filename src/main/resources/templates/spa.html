@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="header_footer.css">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="spa.css">
+    <title>Spa</title>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+<!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/dining}">Dining</a></li>
+                <li><a class="href" th:href="@{/fitness}">Fitness</a></li>
+                <li><a class="href" th:href="@{/spa}">Spa</a></li>
+                <li><a class="href" th:href="@{/map}">Map</a></li>
+                <li th:each="role : ${account.getRoles()}" sec:authorize="isAuthenticated()">
+                    <a class="href" th:if="${role} == CLIENT" th:href="@{/account}">Booking</a>
+                    <a class="href" th:if="${role} == ADMIN" th:href="@{/booking-all}">Booking</a>
+                </li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a>
+                </li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign
+                    up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()"><a th:href="@{/account}" class="href">Account</a>
+                </li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="booking">
+    <div>
+        <form class="booking__form" method="post" th:action="@{/booking-save}">
+            <div class="booking__item">
+                <div class="date">
+                    <label for="firstDay">Date first</label>
+                    <input type="date" id="firstDay" name="firstDay">
+                </div>
+                <div class="date">
+                    <label for="lastDay">Date last</label>
+                    <input type="date" id="lastDay" name="lastDay">
+                </div>
+            </div>
+            <div class="booking__item">
+                <label for="comfort">Room</label>
+                <select id="comfort" size="1" name="comfort">
+                    <option th:each="room : ${rooms}" th:value="${room.getComfort().getName()}"
+                            th:text="${room.getComfort().getName()}">Comfort
+                    </option>
+                </select>
+            </div>
+            <div class="booking__item">
+                <label for="placement">Placement</label>
+                <select id="placement" size="1" name="placement">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="booking__item">
+                <button id="booking" type="submit" sec:authorize="isAuthenticated()" style="display: none"
+                        th:if="${account.getClientPassport() != null}">Booking
+                </button>
+                <a href="#" class="open_modal" sec:authorize="isAuthenticated()" th:if="${account.getClientPassport() != null}" onclick="dialogWindow()">Booking</a>
+                <span sec:authorize="!isAuthenticated()">Please <a th:href="@{/login}">login</a> for booking</span>
+                <span sec:authorize="isAuthenticated()" th:if="${account.getClientPassport() == null}">
+                    Please registration your <a th:href="@{/account}">passport</a> for booking
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="dialog_window" class="dialog_window">
+    <div class="form_window">
+        <div class="form_window_item">
+            <h3>Are you sure about your booking?</h3>
+        </div>
+        <div class="form_window_item">
+            <button sec:authorize="isAuthenticated()" onclick="sendBooking()">Booking</button>
+            <button onclick="dialogWindow()" class="cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="spa__title">
+    <h2>SPA</h2>
+</div>
+<div class="spa">
+    <div class="photo__spa">
+        <img src="https://cache.marriott.com/marriottassets/marriott/MHPBR/mhpbr-spa-0066-hor-feat.jpg" alt="spa">
+    </div>
+    <div class="spa__item">
+        <h2>RENAISSANCE SPA & WELLNESS CLUB</h2>
+        <ul class="first">
+            <li>Pamper yourself during your travels through Minsk, Belarus. The luxurious Renaissance Spa & Wellness
+                club offers a comprehensive menu of treatments, including body wraps, facials, massages and beauty
+                services that will leave you feeling reinvigorated.
+            </li>
+            <li>Hours: Mon-Sun: 07:00 AM - 11:00 PM</li>
+            <li>Appointment is Required. Phone: +375 17 309-90-85</li>
+        </ul>
+    </div>
+    <div class="spa__item">
+        <h3>Services, Treatments & Amenities</h3>
+        <ul class="second">
+            <li>Body scrub</li>
+            <li>Body wrap</li>
+            <li>Eye Treatments</li>
+            <li>Facials</li>
+            <li>Fitness classes available</li>
+            <li>Fitness counseling</li>
+            <li>Hair & scalp treatments</li>
+            <li>Kids Services</li>
+            <li>Manicures/pedicures</li>
+            <li>Massages</li>
+            <li>Men's services</li>
+            <li>Paraffin hand treatments</li>
+            <li>Waxing</li>
+        </ul>
+    </div>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+<script>
+    function sendBooking() {
+        document.getElementById("booking").click();
+    }
+
+    let dialog = false;
+    function dialogWindow(){
+        if (dialog) {
+            document.getElementById("dialog_window").style.display = 'none';
+            dialog = false;
+        } else {
+            document.getElementById("dialog_window").style.display = 'block';
+            dialog = true;
+        }
+    }
+</script>
+</body>
+</html>

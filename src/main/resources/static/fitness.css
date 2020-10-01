@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.fitness {
+    background: white;
+    color: #475eab;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+h2 {
+    margin: 0;
+    color: #475eab;
+}
+
+.fitness__title {
+    font-size: larger;
+    padding-top: 30px;
+    margin: 120px 0 0 0;
+    width: 100%;
+    text-align: center;
+    background: white;
+}
+
+.photo__fitness {
+    width: 80%;
+    padding: 10px 0 10px 0;
+    margin-left: 147px;
+}
+
+.photo__fitness img {
+    width: 100%;
+}
+
+.fitness__item {
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.fitness__item h2 {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    /*font-size: larger;*/
+}
+
+.fitness__item h3 {
+    width: 100%;
+    text-align: center;
+    font-size: larger;
+}
+
+.fitness__item h4 {
+    width: 100%;
+    text-align: center;
+    font-size: larger;
+}
+
+.fitness__item ul {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.fitness__item ul li {
+    margin: 5px 50px;
+    width: 250px;
+    text-decoration: none;
+    list-style: none;
+    font-size: large;
+}
+
+.swimming__title {
+    font-size: larger;
+    width: 100%;
+    text-align: center;
+    background: white;
+    padding-top: 15px;
+}
+
+.swimming {
+    background: white;
+    color: #475eab;
+    width: 100%;
+    display: inline-flex;
+    margin-bottom: 50px;
+}
+
+.swimming__item {
+    margin: 10px 50px 10px 160px;
+}
+
+.swimming__item h3 {
+    width: 100%;
+    text-align: center;
+    font-size: larger;
+}
+
+.swimming__item ul {
+    display: block;
+    width: 300px;
+    margin: 10px 50px;
+}
+
+.swimming__item ul li {
+    text-decoration: none;
+    list-style: none;
+    font-size: large;
+}
+

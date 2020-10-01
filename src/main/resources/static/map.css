@@ -1,0 +1,92 @@
+.map__title {
+    font-size: larger;
+    padding-top: 30px;
+    padding-bottom: 15px;
+    margin: 120px 0 0 0;
+    width: 100%;
+    text-align: center;
+    background: white;
+}
+
+.map__title h2 {
+    margin: 0;
+    color: #475eab;
+}
+
+.map {
+    background: white;
+    padding-left: 150px;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+}
+
+.transport__title {
+    width: 100%;
+    background: white;
+    color: #475eab;
+    text-align: center;
+    font-size: larger;
+    padding: 10px 10px 0 10px;
+}
+
+.transport__title h2 {
+    margin: 0;
+    color: #475eab;
+}
+
+.transport {
+    background: white;
+    color: #475eab;
+    padding: 10px 150px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.transport__item {
+    width: 250px;
+    margin: 10px 60px 10px 0;
+}
+
+.transport__item a {
+    color: darkgray;
+    text-decoration: darkgray;
+}
+
+.transport__item ul {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.transport__item ul li {
+    margin: 10px 0;
+    list-style: none;
+    text-decoration: none;
+}
+
+.parking__title {
+    width: 100%;
+    background: white;
+    color: #475eab;
+    text-align: center;
+    font-size: larger;
+    padding: 10px 10px 0 10px;
+}
+
+.parking__title h2 {
+    margin: 0;
+    color: #475eab;
+}
+
+.parking {
+    background: white;
+    color: #475eab;
+    padding: 10px 150px 20px 150px;
+    display: inline-flex;
+    margin-bottom: 50px;
+}
+
+.parking p {
+    margin: 10px 150px 10px 0;
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="header_footer.css">
+    <title>Convenience</title>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+<!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/room-all}">Room</a></li>
+                <li><a class="href" th:href="@{/convenience-all}">Convenience</a></li>
+                <li sec:authorize="isAuthenticated()"><a class="href">Booking</a></li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a>
+                </li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign
+                    up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()"><a th:href="@{/account}" class="href">Account</a>
+                </li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div th:if="${account} != null">
+    <div th:each="role : ${account.getRoles()}">
+        <div th:if="${role} == 'ADMIN'">
+            <div>
+                <form th:action="@{/convenience-save}" method="post">
+                    <div>
+                        <label for="name">Name</label>
+                        <input id="name" name="name" placeholder="Pool">
+                    </div>
+                    <div>
+                        <label for="standart">Standart Room King</label>
+                        <input type="checkbox" id="standart" name="standart" value="Standart">
+                        <label for="standart_plus">Standart Room Twin</label>
+                        <input type="checkbox" id="standart_plus" name="standart_plus" value="Standart+">
+                        <label for="DeLuxe">De Luxe</label>
+                        <input type="checkbox" id="DeLuxe" name="deluxe" value="De Luxe">
+                        <label for="family_suite">Family Suite</label>
+                        <input type="checkbox" id="family_suite" name="family_suite" value="Family Suite">
+                        <label for="Junior_Suite">Junior Suite</label>
+                        <input type="checkbox" id="Junior_Suite" name="junior_suite" value="Junior Suite">
+                        <label for="suite">Corner Suite</label>
+                        <input type="checkbox" id="suite" name="suite" value="Suite">
+                    </div>
+                    <div>
+                        <label for="description">Description</label>
+                        <input id="description" name="description" placeholder="...">
+                    </div>
+                    <div>
+                        <button type="submit">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div th:each="convenience : ${conveniences}">
+        <div>
+            <span th:text="${convenience.getName()}">Name</span>
+        </div>
+        <div>
+            <p th:text="${convenience.getDescription()}">Description</p>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+</body>
+</html>

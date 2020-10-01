@@ -1,0 +1,335 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Renaissance</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="header_footer.css">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="room.css">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+<!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/dining}">Dining</a></li>
+                <li><a class="href" th:href="@{/fitness}">Fitness</a></li>
+                <li><a class="href" th:href="@{/spa}">Spa</a></li>
+                <li><a class="href" th:href="@{/map}">Map</a></li>
+                <li th:each="role : ${account.getRoles()}" sec:authorize="isAuthenticated()">
+                    <a class="href" th:if="${role} == CLIENT" th:href="@{/account}">Booking</a>
+                    <a class="href" th:if="${role} == ADMIN" th:href="@{/booking-all}">Booking</a>
+                </li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a>
+                </li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign
+                    up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()">
+                    <a th:href="@{/account}" class="href">Account</a>
+                </li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="booking">
+    <div>
+        <form class="booking__form" method="post" th:action="@{/booking-save}">
+            <div class="booking__item">
+                <div class="date">
+                    <label for="firstDay">Date first</label>
+                    <input type="date" id="firstDay" name="firstDay">
+                </div>
+                <div class="date">
+                    <label for="lastDay">Date last</label>
+                    <input type="date" id="lastDay" name="lastDay">
+                </div>
+            </div>
+            <div class="booking__item">
+                <label for="comfort">Room</label>
+                <select id="comfort" size="1" name="comfort">
+                    <option>Comfort</option>
+                    <option th:each="room : ${rooms}" th:value="${room.getComfort().getName()}"
+                            th:text="${room.getComfort().getName()}">Comfort
+                    </option>
+                </select>
+            </div>
+            <div class="booking__item">
+                <label for="placement">Placement</label>
+                <select id="placement" size="1" name="placement">
+                    <option>Size</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="booking__item">
+                <button id="booking" type="submit" sec:authorize="isAuthenticated()" style="display: none"
+                        th:if="${account.getClientPassport() != null}">Booking
+                </button>
+                <a href="#" class="open_modal" sec:authorize="isAuthenticated()" th:if="${account.getClientPassport() != null}" onclick="dialogWindow()">Booking</a>
+                <span sec:authorize="!isAuthenticated()">Please <a th:href="@{/login}">login</a> for booking</span>
+                <span sec:authorize="isAuthenticated()" th:if="${account.getClientPassport() == null}">
+                    Please registration your <a th:href="@{/account}">passport</a> for booking
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="dialog_window" class="dialog_window">
+    <div class="form_window">
+        <div class="form_window_item">
+           <h3>Are you sure about your booking?</h3>
+        </div>
+        <div class="form_window_item">
+            <button sec:authorize="isAuthenticated()" onclick="sendBooking()">Booking</button>
+            <button onclick="dialogWindow()" class="cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="photo">
+    <div class="slide-container">
+        <div class="slide fade">
+            <img src='https://cache.marriott.com/marriottassets/marriott/MHPBR/mhpbr-entrance-0046-hor-feat.jpg' alt=''>
+        </div>
+        <div class="slide fade">
+            <img src='https://cache.marriott.com/marriottassets/marriott/MHPBR/mhpbr-suite-0049-hor-feat.jpg' alt=''>
+        </div>
+        <div class="slide fade">
+            <img src='https://cache.marriott.com/marriottassets/marriott/MHPBR/mhpbr-dining-0062-hor-feat.jpg' alt=''>
+        </div>
+
+        <a href="#" class="prev" title="Previous">&#10094</a>
+        <a href="#" class="next" title="Next">&#10095</a>
+    </div>
+    <div class="dots-container">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+</div>
+
+<div class="title">
+    <h2>
+        GUEST ROOMS
+    </h2>
+</div>
+<div class="room">
+    <div th:each="room : ${rooms}">
+        <a th:href="@{/room(id = ${room.getId()})}">
+            <div class="card">
+                <div th:id="${room.getId()}">
+                    <div>
+                        <img th:src="@{${room.getPhotos().get(0).getSrc()}}" alt="фоточка" class="jpg">
+                    </div>
+                </div>
+                <div class="description">
+                    <h3 th:text="${room.getComfort().getName()}">Title</h3>
+                    <!--                <p th:text="${room.getDescription()}">Description</p>-->
+                </div>
+            </div>
+        </a>
+
+    </div>
+</div>
+
+<div class="title">
+    <h2>KEY AMENITIES</h2>
+</div>
+<div class="convenience">
+    <div class="convenience__item">
+        <a th:href="@{/spa}">
+            <div>
+                <img src="https://img.icons8.com/pastel-glyph/2x/spa-care.png" alt="spa">
+            </div>
+            <div class="convenience__desc">
+                <span>Full-service spa</span>
+            </div>
+        </a>
+    </div>
+    <div class="convenience__item">
+        <a th:href="@{/fitness}">
+            <div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS1EnSiebeAku60fN_ieku3biZzfWHcHVJ2Dw&usqp=CAU"
+                     alt="fitness">
+            </div>
+            <div class="convenience__desc">
+                <span>Fitness</span>
+            </div>
+        </a>
+    </div>
+    <div class="convenience__item">
+        <a th:href="@{/fitness}">
+            <div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRMQ2tm4o50dvtp_GGLaH0SW666sUSsryFgcA&usqp=CAU"
+                     alt="pool">
+            </div>
+            <div class="convenience__desc">
+                <span>Pool</span>
+            </div>
+        </a>
+    </div>
+    <div class="convenience__item">
+        <div>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSRH-nj-07pq6_RMdmWLtliIZWVC-cg6YPZpQ&usqp=CAU"
+                 alt="Pet friendly">
+        </div>
+        <div class="convenience__desc">
+            <span>Pet friendly</span>
+        </div>
+    </div>
+</div>
+
+<div class="title">
+    <h2>HIGHLIGHTS</h2>
+</div>
+<div class="highlights">
+    <div class="highlights__item">
+        <p>Guests at our hotel can take the free shuttle to city center meetings or attractions, or visit the Gates of
+            Minsk and the Minsk-Arena</p>
+    </div>
+    <div class="highlights__item">
+        <p>Organize everything from a lavish wedding to an intimate corporate event in the more than 10,000 square feet
+            of event space at our hotel in Belarus</p>
+    </div>
+    <div class="highlights__item">
+        <p>Take advantage of our luxury spa, modern fitness center, dazzling indoor pool and tempting restaurant and bar
+            while visiting Minsk</p>
+    </div>
+</div>
+
+<div class="title">
+    <h2>GUEST REVIEWS</h2>
+</div>
+<div class="review">
+    <div th:if="${reviews} != null">
+        <div th:each="rewie : ${reviews}" class="review__item">
+            <div class="avatar">
+                <img src="https://indexcall.com/sites/default/files/new_project_37_0.png" alt="person">
+            </div>
+            <div class="information">
+                <h4 th:text="${rewie.getAccount().getClientPassport().getName()}">Name</h4>
+                <p th:text="${rewie.getReview()}">Review</p>
+            </div>
+        </div>
+    </div>
+    <div class="open-button" sec:authorize="isAuthenticated()">
+        <button type="button" onclick="openReview()">Add review</button>
+    </div>
+    <div id="review" class="form__review" style="display: none" sec:authorize="isAuthenticated()">
+        <form method="post" th:action="@{/review-add}">
+            <label for="text">Review</label>
+            <textarea id="text" name="text"></textarea>
+            <div class="review__button">
+                <button type="submit">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="pagination_section">
+    <form method="get" th:action="@{/}" class="previous">
+        <input type="hidden" name="page" th:value="${page} - 1">
+        <button type="submit" th:if="${page} != 0">&#10094 previous</button>
+        <button type="submit" th:if="${page} == 0" disabled>&#10094 previous</button>
+    </form>
+    <form method="get" th:action="@{/}" class="next">
+        <input type="hidden" name="page" th:value="${page} + 1">
+        <button type="submit" th:if="${page} != ${maxPage}">next &#10095</button>
+        <button type="submit" th:if="${page} == ${maxPage}" disabled>next &#10095</button>
+    </form>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+<script>
+    function sendBooking() {
+        document.getElementById("booking").click();
+    }
+
+    let dialog = false;
+    function dialogWindow(){
+        if (dialog) {
+            document.getElementById("dialog_window").style.display = 'none';
+            dialog = false;
+        } else {
+            let first = document.getElementById("firstDay").value;
+            let last = document.getElementById("lastDay").value;
+            document.getElementById("dialog_window").style.display = 'block';
+            dialog = true;
+        }
+    }
+
+    let visible = true;
+    function openReview() {
+        if (visible) {
+            document.getElementById("review").style.display = 'block';
+            visible = false;
+        } else {
+            document.getElementById("review").style.display = 'none';
+            visible = true;
+        }
+    }
+
+    let currentSlide = 0;
+    const slides = document.querySelectorAll(".slide");
+    const dots = document.querySelectorAll('.dot');
+
+    const init = (n) => {
+        slides.forEach((slide, index) => {
+            slide.style.display = "none";
+            dots.forEach((dot, index) => {
+                dot.classList.remove("active")
+            })
+        });
+        slides[n].style.display = "block";
+        dots[n].classList.add("active")
+    };
+    document.addEventListener("DOMContentLoaded", init(currentSlide));
+    const next = () => {
+        currentSlide >= slides.length - 1 ? currentSlide = 0 : currentSlide++;
+        init(currentSlide)
+    };
+
+    const prev = () => {
+        currentSlide <= 0 ? currentSlide = slides.length - 1 : currentSlide--;
+        init(currentSlide)
+    };
+
+    document.querySelector(".next").addEventListener('click', next);
+
+    document.querySelector(".prev").addEventListener('click', prev);
+
+
+    setInterval(() => {
+        next()
+    }, 10000);
+
+    dots.forEach((dot, i) => {
+        dot.addEventListener("click", () => {
+            console.log(currentSlide);
+            init(i);
+            currentSlide = i
+        })
+    })
+</script>
+</body>
+</html>

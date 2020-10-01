@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="header_footer.css">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="map.css">
+    <title>Map</title>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+<!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/dining}">Dining</a></li>
+                <li><a class="href" th:href="@{/fitness}">Fitness</a></li>
+                <li><a class="href" th:href="@{/spa}">Spa</a></li>
+                <li><a class="href" th:href="@{/map}">Map</a></li>
+                <li th:each="role : ${account.getRoles()}" sec:authorize="isAuthenticated()">
+                    <a class="href" th:if="${role} == CLIENT" th:href="@{/account}">Booking</a>
+                    <a class="href" th:if="${role} == ADMIN" th:href="@{/booking-all}">Booking</a>
+                </li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a>
+                </li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign
+                    up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()"><a th:href="@{/account}" class="href">Account</a>
+                </li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="booking">
+    <div>
+        <form class="booking__form" method="post" th:action="@{/booking-save}">
+            <div class="booking__item">
+                <div class="date">
+                    <label for="firstDay">Date first</label>
+                    <input type="date" id="firstDay" name="firstDay">
+                </div>
+                <div class="date">
+                    <label for="lastDay">Date last</label>
+                    <input type="date" id="lastDay" name="lastDay">
+                </div>
+            </div>
+            <div class="booking__item">
+                <label for="comfort">Room</label>
+                <select id="comfort" size="1" name="comfort">
+                    <option th:each="room : ${rooms}" th:value="${room.getComfort().getName()}"
+                            th:text="${room.getComfort().getName()}">Comfort
+                    </option>
+                </select>
+            </div>
+            <div class="booking__item">
+                <label for="placement">Placement</label>
+                <select id="placement" size="1" name="placement">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="booking__item">
+                <button id="booking" type="submit" sec:authorize="isAuthenticated()" style="display: none"
+                        th:if="${account.getClientPassport() != null}">Booking
+                </button>
+                <a href="#" class="open_modal" sec:authorize="isAuthenticated()" th:if="${account.getClientPassport() != null}" onclick="dialogWindow()">Booking</a>
+                <span sec:authorize="!isAuthenticated()">Please <a th:href="@{/login}">login</a> for booking</span>
+                <span sec:authorize="isAuthenticated()" th:if="${account.getClientPassport() == null}">
+                    Please registration your <a th:href="@{/account}">passport</a> for booking
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="dialog_window" class="dialog_window">
+    <div class="form_window">
+        <div class="form_window_item">
+            <h3>Are you sure about your booking?</h3>
+        </div>
+        <div class="form_window_item">
+            <button sec:authorize="isAuthenticated()" onclick="sendBooking()">Booking</button>
+            <button onclick="dialogWindow()" class="cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="map__title">
+    <h2>MAP</h2>
+</div>
+<div class="map">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1962.9210203121947!2d27.528103365736584!3d53.892025706045054!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46dbd0771a23b75f%3A0x2dfc8c9b7990ebeb!2z0KDQtdC90LXRgdGB0LDQvdGBINCc0LjQvdGB0Log0J7RgtC10LvRjA!5e0!3m2!1sru!2sby!4v1600797510954!5m2!1sru!2sby"
+            width="1200" height="500" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false"
+            tabindex="0"></iframe>
+</div>
+
+<div class="transport__title">
+    <h2>TRANSPORTATION</h2>
+</div>
+<div class="transport">
+    <div class="transport__item">
+        <h3>Car hire</h3>
+        <ul>
+            <li>Nearby</li>
+            <li><a href="https://www.europcar.com/en/car-rental/locations/belarus/minsk">Europcar</a></li>
+            <li>Nezavisimosti av. 11-2-416, Minsk</li>
+            <li>Phone: +375 29 133-65-53</li>
+        </ul>
+    </div>
+    <div class="transport__item">
+        <h3>Bus Station</h3>
+        <p>Central bus station 5.3 km E from hotel</p>
+    </div>
+    <div class="transport__item">
+        <h3>Subway Station</h3>
+        <p>Grushevka 1.2 km W from hotel</p>
+    </div>
+    <div class="transport__item">
+        <h3>Train Station</h3>
+        <p>Minsk Passazhirskiy 1 km S from hotel</p>
+    </div>
+    <div class="transport__item">
+        <h3>Minsk National Airport <a href="http://airport.by/en">(MSQ)</a></h3>
+        <p>Airport Phone: +375 17 279-13-00</p>
+    </div>
+</div>
+
+<div class="parking__title">
+    <h2>PARKING</h2>
+</div>
+<div class="parking">
+    <p>Complimentary on-site parking</p>
+    <p>Off-site parking, fee: 1 USD hourly, 6 USD daily</p>
+    <p>Outdoor parking free of charge for hotel guests</p>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+<script>
+    function sendBooking() {
+        document.getElementById("booking").click();
+    }
+
+    let dialog = false;
+    function dialogWindow(){
+        if (dialog) {
+            document.getElementById("dialog_window").style.display = 'none';
+            dialog = false;
+        } else {
+            document.getElementById("dialog_window").style.display = 'block';
+            dialog = true;
+        }
+    }
+</script>
+</body>
+</html>

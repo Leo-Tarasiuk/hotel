@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="header_footer.css">
+    <link rel="stylesheet" href="room.css">
+    <link rel="stylesheet" href="main.css">
+    <title>Room</title>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header_item">
+            <div class="header_item_item">
+                <a class="href" th:href="@{/}">Renaissance</a>
+            </div>
+        </div>
+        <div class="header_item">
+            <ul class="navigation">
+<!--                <li><a class="href">Photo</a></li>-->
+                <li><a class="href" th:href="@{/dining}">Dining</a></li>
+                <li><a class="href" th:href="@{/fitness}">Fitness</a></li>
+                <li><a class="href" th:href="@{/spa}">Spa</a></li>
+                <li><a class="href" th:href="@{/map}">Map</a></li>
+                <li th:each="role : ${account.getRoles()}" sec:authorize="isAuthenticated()">
+                    <a class="href" th:if="${role} == CLIENT" th:href="@{/account}">Booking</a>
+                    <a class="href" th:if="${role} == ADMIN" th:href="@{/booking-all}">Booking</a>
+                </li>
+            </ul>
+            <ul class="sign">
+                <li class="sign_in" sec:authorize="!isAuthenticated()"><a th:href="@{/login}" class="href">Sign in</a>
+                </li>
+                <li class="sign_up" sec:authorize="!isAuthenticated()"><a th:href="@{/registration}" class="href">Sign
+                    up</a></li>
+                <li class="sign_in" sec:authorize="isAuthenticated()"><a th:href="@{/account}" class="href">Account</a>
+                </li>
+                <li class="sign_up" sec:authorize="isAuthenticated()">
+                    <form method="post" th:action="@{/logout}">
+                        <button name="logout" type="submit" class="logout">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="booking">
+    <div>
+        <form class="booking__form" method="post" th:action="@{/booking-save}">
+            <div class="booking__item">
+                <div class="date">
+                    <label for="firstDay">Date first</label>
+                    <input type="date" id="firstDay" name="firstDay">
+                </div>
+                <div class="date">
+                    <label for="lastDay">Date last</label>
+                    <input type="date" id="lastDay" name="lastDay">
+                </div>
+            </div>
+            <div class="booking__item">
+                <label for="comfort">Room</label>
+                <select id="comfort" size="1" name="comfort">
+                    <option th:each="room : ${rooms}" th:value="${room.getComfort().getName()}"
+                            th:text="${room.getComfort().getName()}">Comfort
+                    </option>
+                </select>
+            </div>
+            <div class="booking__item">
+                <label for="placement">Placement</label>
+                <select id="placement" size="1" name="placement">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <div class="booking__item">
+                <button id="booking" type="submit" sec:authorize="isAuthenticated()" style="display: none"
+                        th:if="${account.getClientPassport() != null}">Booking
+                </button>
+                <a href="#" class="open_modal" sec:authorize="isAuthenticated()" th:if="${account.getClientPassport() != null}" onclick="dialogWindow()">Booking</a>
+                <span sec:authorize="!isAuthenticated()">Please <a th:href="@{/login}">login</a> for booking</span>
+                <span sec:authorize="isAuthenticated()" th:if="${account.getClientPassport() == null}">
+                    Please registration your <a th:href="@{/account}">passport</a> for booking
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="dialog_window" class="dialog_window">
+    <div class="form_window">
+        <div class="form_window_item">
+            <h3>Are you sure about your booking?</h3>
+        </div>
+        <div class="form_window_item">
+            <button sec:authorize="isAuthenticated()" onclick="sendBooking()">Booking</button>
+            <button onclick="dialogWindow()" class="cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div class="title__room">
+    <h2 th:text="${room.getComfort().getName()} +' (' + ${room.getPrice()} + '$)'">Comfort</h2>
+</div>
+<div class="photo__room">
+    <div class="slide-container">
+        <div class="slide fade" th:each="photo : ${room.getPhotos()}">
+            <img th:src="@{${photo.getSrc()}}" alt=''>
+        </div>
+        <a href="#" class="prev" title="Previous">&#10094</a>
+        <a href="#" class="next" title="Next">&#10095</a>
+    </div>
+        <div class="dots-container">
+            <span class="dot" th:each="photo : ${room.getPhotos()}"></span>
+        </div>
+</div>
+<div class="room__description">
+    <div th:object="${room}">
+        <div class="room__description__item">
+            <h3 class="item__title">Description</h3>
+            <p th:text="*{description}">Description</p>
+        </div>
+        <p class="line"></p>
+        <div class="room__description__item">
+            <h3 class="item__title">Conveniences</h3>
+            <ul>
+                <li th:each="convenience : *{comfort.getConveniences()}" th:text="${convenience.getName()}">
+                    Convenience
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div th:if="${authenticated} != null">
+    <div th:each="role : ${account.getRoles()}">
+        <div th:if="${role} == 'ADMIN'">
+            lol
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="footer__copyright">
+        Tarasiuk Leontiy &copy; 2020<br/>
+        <a href="#" class="footer__link">Renaissance</a>
+    </div>
+</footer>
+<script>
+    function sendBooking() {
+        document.getElementById("booking").click();
+    }
+
+    let dialog = false;
+    function dialogWindow(){
+        if (dialog) {
+            document.getElementById("dialog_window").style.display = 'none';
+            dialog = false;
+        } else {
+            document.getElementById("dialog_window").style.display = 'block';
+            dialog = true;
+        }
+    }
+
+    let currentSlide = 0;
+    const slides = document.querySelectorAll(".slide");
+    const dots = document.querySelectorAll('.dot');
+
+    const init = (n) => {
+        slides.forEach((slide, index) => {
+            slide.style.display = "none";
+            dots.forEach((dot, index) => {
+                dot.classList.remove("active")
+            })
+        });
+        slides[n].style.display = "block";
+        dots[n].classList.add("active")
+    };
+    document.addEventListener("DOMContentLoaded", init(currentSlide));
+    const next = () => {
+        currentSlide >= slides.length - 1 ? currentSlide = 0 : currentSlide++;
+        init(currentSlide)
+    };
+
+    const prev = () => {
+        currentSlide <= 0 ? currentSlide = slides.length - 1 : currentSlide--;
+        init(currentSlide)
+    };
+
+    document.querySelector(".next").addEventListener('click', next);
+
+    document.querySelector(".prev").addEventListener('click', prev);
+
+
+    setInterval(() => {
+        next()
+    }, 10000);
+
+    dots.forEach((dot, i) => {
+        dot.addEventListener("click", () => {
+            console.log(currentSlide);
+            init(i);
+            currentSlide = i
+        })
+    })
+</script>
+</body>
+</html>

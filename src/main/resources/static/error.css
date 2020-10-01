@@ -1,0 +1,34 @@
+body {
+    margin: 0;
+    background: white;
+    width: 100%;
+    height: 100%;
+}
+
+html {
+    background: white;
+}
+
+.exception {
+    display: block;
+    text-align: center;
+    margin: 20px;
+    padding: 100px;
+    margin-bottom: 150px;
+    color: #475eab;
+}
+
+.exception__item {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+
+.exception__item .img {
+    width: 40%;
+    margin: 0 400px;
+}
+
+img {
+    width: 100%;
+}
